@@ -1,9 +1,8 @@
 package main
 
 import (
-	"log"
-
 	"go-crm/models"
+	"log"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -16,7 +15,8 @@ var err error
 
 // Setup the database connection
 func setupDatabase() {
-	dsn := "host=localhost user=crm_user password=password dbname=crm port=5432 sslmode=disable"
+	// Change localhost to db (the service name from docker-compose.yml)
+	dsn := "host=db user=crm_user password=password dbname=crm port=5432 sslmode=disable"
 	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Failed to connect to database: ", err)
@@ -63,6 +63,7 @@ func main() {
 		// Return the created user
 		return c.Status(fiber.StatusCreated).JSON(user)
 	})
+
 	// Fetch all users Route
 	app.Get("/users", func(c *fiber.Ctx) error {
 		var users []models.User
@@ -75,6 +76,7 @@ func main() {
 		// Return the users as JSON response
 		return c.JSON(users)
 	})
+
 	// Fetch user by ID Route
 	app.Get("/users/:id", func(c *fiber.Ctx) error {
 		id := c.Params("id")
@@ -88,6 +90,7 @@ func main() {
 		// Return the user as a JSON response
 		return c.JSON(user)
 	})
+
 	// Update a User Route
 	app.Put("/users/:id", func(c *fiber.Ctx) error {
 		id := c.Params("id")
@@ -111,6 +114,7 @@ func main() {
 		// Return the updated user
 		return c.JSON(user)
 	})
+
 	// Delete user Route
 	app.Delete("/users/:id", func(c *fiber.Ctx) error {
 		id := c.Params("id")
